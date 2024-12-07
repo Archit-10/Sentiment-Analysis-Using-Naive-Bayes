@@ -1,73 +1,94 @@
-# Sentiment-Analysis-Using-Naive-Bayes
-
-This project involves performing sentiment analysis on a product review dataset. The goal is to classify reviews based on their sentiment using Naive Bayes classifiers. We will explore two different feature extraction techniques: Bag of Words (BoW) and Term Frequency-Inverse Document Frequency (TfIdf). The dataset consists of customer reviews with star ratings belonging to four classes (1, 2, 4, 5).
 Dataset
 
-The dataset comprises product reviews and their corresponding star ratings. The data is provided in a split format with separate training and testing indices available in the train_test_index.pickle file.
-Steps to Complete the Project
-1. Data Preprocessing
+The dataset consists of product reviews, star ratings (1, 2, 4, 5), and their corresponding sentiments (0 for negative and 1 for positive).
+Column	Description
+text	The customer review text.
+stars	The star rating assigned by the customer (1–5).
+sentiment	Derived sentiment (0 = Negative, 1 = Positive).
 
-    Text Cleaning: Remove punctuation, convert text to lowercase, and remove any non-alphanumeric characters.
-    Stop Word Removal: Remove common stop words that do not contribute to the sentiment of the review.
-    Stemming/Lemmatization: Reduce words to their root forms to standardize the text and reduce dimensionality.
+Additionally, embeddings generated using the siebert/sentiment-roberta-large-english model are provided for clustering tasks.
+Part 1: Sentiment Analysis
+Text Preprocessing
 
-2. Feature Extraction
+    Removed punctuation and converted text to lowercase.
+    Tokenized reviews and removed stop words using the NLTK library.
+    Applied stemming using PorterStemmer to reduce words to their base form.
 
-    Bag of Words (BoW): Convert text into numerical feature vectors using word counts. Choose words that optimize model performance.
-    TfIdf: Convert text into numerical feature vectors using Term Frequency-Inverse Document Frequency to emphasize important words.
+Bag of Words (BoW) Features
 
-3. Model Training and Evaluation
+    Created BoW features using CountVectorizer from sklearn.
+    Trained a Multinomial Naive Bayes (MNB) classifier.
 
-    Train-Test Split: Use the provided train_test_index.pickle file to split the data into training and testing sets.
-    Model Training: Train Naive Bayes classifiers using the BoW and TfIdf features.
-    Model Evaluation: Evaluate model performance using metrics such as accuracy, precision, recall, and F1 score. Report any interesting observations.
+TF-IDF Features
 
-Prerequisites
+    Created TF-IDF features using TfidfVectorizer.
+    Trained an MNB classifier using these features.
+
+Performance Metrics
+
+Metrics evaluated using classification_report:
+
+    Accuracy
+    Precision
+    Recall
+    F1-Score
+
+Observations:
+
+    BoW features yielded better accuracy (~70%) compared to TF-IDF features (~59%).
+    Challenges remain in predicting minority classes (e.g., 2-star reviews).
+
+Part 2: Clustering
+K-Means Clustering
+
+    Used embeddings from siebert/sentiment-roberta-large-english for clustering.
+    Applied K-Means clustering with:
+        k-means++ initialization.
+        Forgy (random) initialization.
+    Plotted the Elbow Curve to determine the optimal number of clusters by analyzing WCSS (Within-Cluster Sum of Squares).
+
+Evaluation Metrics
+
+Implemented the following clustering metrics from scratch:
+
+    Purity: Measures the proportion of correctly classified samples.
+    NMI (Normalized Mutual Information): Evaluates mutual information between clusters and ground truth.
+    Rand Index: Measures the similarity between predicted and ground truth clusters.
+
+Requirements
 
     Python 3.x
-    Required Libraries: pandas, numpy, sklearn, nltk
+    Libraries:
 
-Instructions
+    pip install numpy pandas scikit-learn nltk matplotlib
 
-    Clone the Repository:
+How to Run
 
-    sh
+    Clone the repository:
 
-git clone <repository_url>
-cd <repository_directory>
+git clone https://github.com/Archit-10/Sentiment-Analysis-Using-Naive-Bayes.git
+cd sentiment-analysis-clustering
 
-Install Dependencies:
-
-sh
+Install dependencies:
 
 pip install -r requirements.txt
 
-Download Dataset:
+Run Sentiment Analysis:
 
-    Download the dataset from the provided link and place it in the data directory.
+python sentiment_analysis.py
 
-Run Preprocessing:
+Run Clustering:
 
-    Execute the preprocessing script to clean the text and extract features.
+    python clustering.py
 
-sh
+Results and Observations
+Sentiment Analysis
 
-python preprocess.py
+    BoW Accuracy: ~70%
+    TF-IDF Accuracy: ~59%
+    BoW outperforms TF-IDF in this case due to simpler feature representation.
 
-Train and Evaluate Models:
+Clustering
 
-    Run the training script to train Naive Bayes classifiers and evaluate their performance.
-
-sh
-
-    python train_evaluate.py
-
-Results
-
-    BoW Features: Report accuracy, precision, recall, and F1 score.
-    TfIdf Features: Report accuracy, precision, recall, and F1 score.
-    Observations: Provide insights based on the performance metrics.
-
-Conclusion
-
-This project demonstrates the application of Naive Bayes classifiers for sentiment analysis on a product review dataset. By comparing BoW and TfIdf feature extraction techniques, we gain insights into their effectiveness for this task.
+    Optimal clusters determined using the Elbow Method.
+    Metrics like Purity, NMI, and Rand Index highlight the quality of clustering.
